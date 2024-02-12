@@ -3,10 +3,28 @@ const holes = document.querySelectorAll('.hole');
 const scoreBoard = document.querySelector('.score');
 const moles = document.querySelectorAll('.mole');
 
+// Select the message element from the DOM
+const message = document.querySelector('.message');
+
 // Define game variables
 let lastHole;
 let timeUp = false;
 let score = 0;
+
+
+// Function to start the game
+function startGame() {
+  score = 0;
+  updateScore(0);
+  timeUp = false;
+  message.textContent = "You have 10 seconds to touch the mole!";
+  peep(); // Show moles
+  setTimeout(() => {
+    timeUp = true;
+    message.textContent = ""; // Remove the message
+    alert('Time\'s up!');
+  }, 10000); // Set the game duration to 10 seconds
+}
 
 // Function to generate a random time between min and max
 function randomTime(min, max) {
@@ -38,17 +56,17 @@ function peep() {
   }, time);
 }
 
-// Function to start the game
-function startGame() {
-  score = 0;
-  updateScore(0);
-  timeUp = false;
-  peep();
-  setTimeout(() => {
-    timeUp = true;
-    alert('Time\'s up!');
-  }, 10000); // Set the game duration to 10 seconds
-}
+// // Function to start the game
+// function startGame() {
+//   score = 0;
+//   updateScore(0);
+//   timeUp = false;
+//   peep();
+//   setTimeout(() => {
+//     timeUp = true;
+//     alert('Time\'s up!');
+//   }, 10000); // Set the game duration to 10 seconds
+// }
 
 // Function to handle clicking on a mole
 function bonk(e) {
