@@ -1,59 +1,68 @@
+// Select elements from the DOM
 const holes = document.querySelectorAll('.hole');
 const scoreBoard = document.querySelector('.score');
 const moles = document.querySelectorAll('.mole');
+
+// Define game variables
 let lastHole;
- let timeUp = false;
- let score = 0;
+let timeUp = false;
+let score = 0;
 
-
-function randomTime (min, max){
+// Function to generate a random time between min and max
+function randomTime(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-function randomHole(holes){
-  // nous avons besoin d'un nombr aléatoire entre 0 et 6
+// Function to select a random hole
+function randomHole(holes) {
   const idx = Math.floor(Math.random() * holes.length);
-  //  aleatoir holes[0 à 6]
   const hole = holes[idx];
-  if (hole === lastHole){
-    console.log('ah na na na')
+  if (hole === lastHole) {
+    // If the same hole is selected, recursively call the function to find a different one
     return randomHole(holes);
   }
   lastHole = hole;
   return hole;
-  // console.log(holes.length);
 }
 
-// fonction pour un coup d'œil 
+// Function to show a mole in a random hole
 function peep() {
+  if (timeUp) return; // Exit the function if time is up
   const time = randomTime(200, 1000);
   const hole = randomHole(holes);
   hole.classList.add('up');
-  // supprimer apres apparition
   setTimeout(() => {
     hole.classList.remove('up');
-    // rappeler la function pour que ça continu d'apparaitre il time is not up
-    if (!timeUp) peep();
-    
-    // peep();
-  
+    // Call peep recursively to show another mole
+    peep();
   }, time);
 }
 
-// fonction de tableau de bord
-function startGame(){
-  scoreBoard.textContent = 0;
-  timeUp = false;
+// Function to start the game
+function startGame() {
   score = 0;
+  updateScore(0);
+  timeUp = false;
   peep();
-  setTimeout(() => timeUp = true, 10000);
+  setTimeout(() => {
+    timeUp = true;
+    alert('Time\'s up!');
+  }, 10000); // Set the game duration to 10 seconds
 }
 
+// Function to handle clicking on a mole
 function bonk(e) {
-  if(!e.isTrusted) return;
+  if (!e.isTrusted) return; // Exit if the click event is not trusted (e.g., simulated)
   score++;
+  updateScore(score);
   this.parentNode.classList.remove('up');
-  scoreBoard.textContent = score;
 }
 
+// Function to update the score displayed on the scoreboard
+function updateScore(newScore) {
+  scoreBoard.textContent = newScore;
+}
+
+// Add event listeners to moles
 moles.forEach(mole => mole.addEventListener('click', bonk));
+
